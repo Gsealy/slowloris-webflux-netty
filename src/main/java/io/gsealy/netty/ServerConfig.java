@@ -28,17 +28,7 @@ public class ServerConfig {
             tcp.bootstrap(bootstrap -> bootstrap.childHandler(new ChannelInitializer<>() {
               @Override
               protected void initChannel(Channel channel) {
-                channel.pipeline().addLast(
-                    new IdleStateHandler(0, 0, idleTimeout.toNanos(), NANOSECONDS),
-                    new ChannelDuplexHandler() {
-                      @Override
-                      public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
-                        if (evt instanceof IdleStateEvent) {
-                          ctx.close();
-                        }
-                      }
-                    }
-                );
+                channel.pipeline().addLast(new ReadTimeoutHandler(9));
               }
             }))
         ));
